@@ -3,7 +3,7 @@ Sebastian Hanisch - Operations Research und Machine Learning
 
 Stück 7 der Reihe „Zielfunktionsdesign“ (gelb, das Beispiel wechselt von der Zuordnung zur Prognose): Welches Ziel belohnt die wahre Angabe?
 Die Demo zeigt, bei welcher Regel die ehrliche Meldung die beste ist (Brier, Log, sphärisch gegen Trefferquote und Absolutfehler), wie schwach der Anreiz ist,
-wie oft die Ehrlichkeit auf endlich vielen Ereignissen vorn liegt, warum ein Wettbewerb nach Rang sie trotzdem verdirbt und was schon ein Anteil Absolutfehler anrichtet.
+wie oft die Ehrlichkeit auf endlich vielen Ereignissen vorn liegt, warum ein Wettbewerb, in dem nur der Sieger zählt, sie bei vielen Prognostikern trotzdem verdirbt und was schon ein Anteil Absolutfehler anrichtet.
 
 Lauffähig mit: streamlit run app.py
 """
@@ -88,7 +88,7 @@ st.markdown(
     """
 **Welches Ziel belohnt die wahre Angabe?** Das Beispiel wechselt: kein Zuordnungsplan, sondern eine **Prognose**. Ein Prognostiker glaubt, ein Ereignis trete mit Wahrscheinlichkeit **p** ein, und **meldet** eine Wahrscheinlichkeit **q**;
 eine **Regel** (das Ziel) vergibt Punkte gegen den Ausgang. **Ehrlich** ist q = p. Bei **Brier**, **Log** und **sphärisch** ist die ehrliche Meldung im Erwartungswert die beste, bei der **Trefferquote** ist sie gleichgültig,
-beim **Absolutfehler** lohnt die Lüge. Aber auch das richtige Ziel hat Grenzen: der Anreiz ist schwach, auf wenigen Ereignissen liegt die Ehrlichkeit oft nicht vorn, und im **Wettbewerb nach Rang** lohnt Übertreiben trotzdem.
+beim **Absolutfehler** lohnt die Lüge (außer bei 1, 50 und 99 %). Aber auch das richtige Ziel hat Grenzen: der Anreiz ist schwach, auf wenigen Ereignissen liegt die Ehrlichkeit oft nicht vorn, und im **Wettbewerb** mit vielen Prognostikern, in dem nur der Sieger zählt, lohnt Übertreiben trotzdem (bei 2 und 5 Prognostikern nicht).
 
 Weiter unten: **🔬 Die Stärke des Anreizes**, **🔬 Ehrlich gegen übertreibend**, **🔬 Der Wettbewerb**, **🔬 Ein bisschen uneigentlich**, **🚧 Wo die Annahmen enden** und der Expander **📐 Mathematische Formulierung**.
 """
@@ -179,7 +179,7 @@ if st.toggle("Die Ehrlichkeit über feste Ereigniszahlen nachrechnen (10 bis 500
 st.markdown("---")
 
 st.subheader("🔬 Der Wettbewerb")
-st.caption(f"Wer nicht nach Punkten, sondern nach dem Rang bezahlt wird, hat auch beim richtigen Ziel einen Grund zu übertreiben: {settings.m} Prognostiker mit verrauschtem Glauben, Sieger ist die höchste Gesamtpunktzahl auf {C.N_CONTEST} Ereignissen; "
+st.caption(f"Wer nicht nach Punkten, sondern nur als Sieger bezahlt wird, hat bei vielen Prognostikern auch beim richtigen Ziel einen Grund zu übertreiben (bei 2 und 5 Prognostikern nicht): {settings.m} Prognostiker mit verrauschtem Glauben, Sieger ist die höchste Gesamtpunktzahl auf {C.N_CONTEST} Ereignissen; "
            f"einer meldet extremere (λ über 1) oder vorsichtigere Wahrscheinlichkeiten (λ unter 1) als er glaubt. {C.T_CONTEST} Versuche.")
 con = _contest(settings)
 st.plotly_chart(build_contest(con), width="stretch", key="contest_chart")
@@ -221,7 +221,7 @@ st.markdown(
 | **Der Prognostiker maximiert die erwartete Punktzahl** | Wer Punkte nicht linear bewertet (Risikoscheu, Auszahlung nach Rang, Preise für den Ersten), hat auch bei einer eigentlichen Regel Gründe zu übertreiben; der Wettbewerb zeigt das | – |
 | **Der Glaube ist ehrlich gebildet** | Die Regel belohnt die Übereinstimmung von Meldung und **Glaube**, nicht die Wahrheit: wer sich irrt, wird nicht bestraft, solange er ehrlich meldet | Stück 13 (Ziel testen) |
 | **Binäres Ereignis, ganze Prozent** | Mehrklassen-, Intervall- und Quantilregeln sind nicht Teil; Meldungen 0 und 100 % sind ausgeschlossen (Log) | `forecast-interval-demo` |
-| **Anreiz nur im Erwartungswert** | Auf endlich vielen Ereignissen liegt die Ehrlichkeit auch bei Brier nach 20 Ereignissen nur in etwa 69 % der Versuche vorn | – |
+| **Anreiz nur im Erwartungswert** | Auf endlich vielen Ereignissen liegt die Ehrlichkeit auch bei Brier nach 20 Ereignissen gegen eine um 10 Prozentpunkte übertriebene Meldung nur in etwa 69 % der Versuche vorn | – |
 | **Ein Prognostiker, kein Markt** | Händler gegen einen Marktmacher (LMSR) sind ein anderes Modell; keine Anreizverträglichkeit mehrerer Spieler, kein Mechanism Design | `prognosemarkt-demo` |
 | **Ersatzziele und Ausnutzen** | Dass ein Ziel Ehrlichkeit belohnt, heißt nicht, dass es nichts anderes belohnt; die Überoptimierung eines Ersatzziels ist ein eigenes Thema | Stück 8, 9 |
 """
@@ -242,7 +242,7 @@ Die Regel heißt **strikt eigentlich**, wenn $\bar S(q; p)$ für jedes $p$ nur b
 **Erkennung.** Mit $D_1 = S(p, 1) - S(q, 1)$ und $D_0 = S(p, 0) - S(q, 0)$ ist der erwartete Vorsprung der Ehrlichkeit je Ereignis $\Delta = p D_1 + (1 - p) D_0$ und die Varianz $p(1 - p)(D_1 - D_0)^2$;
 $n_{95} = 1{,}645^2 \cdot p(1 - p)(D_1 - D_0)^2 / \Delta^2$ (Normalnäherung).
 
-**Mischung.** Für $S_\mu = \mu\, S_{\text{Brier}} + (1 - \mu)\, S_{\text{abs}}$ ist $\bar S_\mu'(q) = -2\mu (q - p) - (1 - \mu)(1 - 2p) = 0$ bei $q^* = p + \dfrac{(1 - \mu)(2p - 1)}{2\mu}$ (auf $[0{,}01;\, 0{,}99]$ begrenzt): nur bei $\mu = 1$ oder $p = \tfrac12$ ist die ehrliche Meldung die beste.
+**Mischung.** Für $S_\mu = \mu\, S_{\text{Brier}} + (1 - \mu)\, S_{\text{abs}}$ ist $\bar S_\mu'(q) = -2\mu (q - p) - (1 - \mu)(1 - 2p) = 0$ bei $q^* = p + \dfrac{(1 - \mu)(2p - 1)}{2\mu}$ (auf $[0{,}01;\, 0{,}99]$ begrenzt): im stetigen Fall nur bei $\mu = 1$ oder $p = \tfrac12$ ist die ehrliche Meldung die beste (auf dem Prozentraster mit Begrenzung auch bei $p$ = 1 % und 99 % und, bei kleinem Anteil Absolutfehler, nahe 50 %).
 
 **Wettbewerb.** Der Glaube von Prognostiker $i$ auf Ereignis $j$ ist $\sigma\bigl(\operatorname{logit}(p_j) + \varepsilon_{ij}\bigr)$ mit $\varepsilon_{ij} \sim \mathcal N(0, 0{,}5^2)$; der Abweichler meldet $\sigma(\lambda \cdot \operatorname{logit}(\text{Glaube}))$.
 
