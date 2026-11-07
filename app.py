@@ -90,9 +90,24 @@ st.markdown(
 eine **Regel** (das Ziel) vergibt Punkte gegen den Ausgang. **Ehrlich** ist q = p. Bei **Brier**, **Log** und **sphärisch** ist die ehrliche Meldung im Erwartungswert die beste, bei der **Trefferquote** zählt nur die Seite von 50 % (die ehrliche Meldung ist eine von vielen gleich guten; eine Lüge bringt nie Punkte: auf derselben Seite von 50 % kostet sie nichts, auf der anderen Seite oder genau auf 50 % kostet sie Punkte),
 beim **Absolutfehler** lohnt die Lüge (außer bei 1, 50 und 99 %). Aber auch das richtige Ziel hat Grenzen: der Anreiz ist schwach, bei 10 Ereignissen liegt die ehrliche Meldung beim Brier-Maß gegen eine um 10 Prozentpunkte übertriebene nur in 60,5 % der Versuche vorn, und im **Wettbewerb**, in dem nur der Sieger zählt, lohnt Übertreiben trotzdem: bei 20 Prognostikern klar, bei 10 nur wenig, bei 2 und 5 nicht.
 
+Wer das Thema zuerst ohne Fachbegriffe verstehen will, öffnet „💬 In einfachen Worten“.
+
 Weiter unten: **🔬 Die Stärke des Anreizes**, **🔬 Ehrlich gegen übertreibend**, **🔬 Der Wettbewerb**, **🔬 Ein bisschen uneigentlich**, **🚧 Wo die Annahmen enden** und der Expander **📐 Mathematische Formulierung**.
 """
 )
+
+# erklaerseite:einfach:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/ehrlichkeit-belohnen-erklaert.json, nicht von Hand ändern)
+with st.expander("💬 In einfachen Worten"):
+    st.markdown(
+        """
+Ein Prognostiker, etwa eine Wetterfrau, glaubt, dass ein Ereignis mit einer bestimmten Wahrscheinlichkeit eintritt, und meldet eine Zahl. Hinterher vergibt eine Regel Punkte gegen den Ausgang. Ehrlich ist, genau den eigenen Glauben zu melden. Die Demo zeigt, bei welchen Regeln das im Mittel die beste Meldung ist, bei welchen sie der Ehrlichkeit gleichgültig sind und bei welcher Übertreiben mehr Punkte bringt.
+
+Außerdem zeigt sie, wie klein der Vorteil der Ehrlichkeit sein kann und warum er auf kurzen Reihen im Zufall untergeht. Zuletzt lässt sie einen Wettbewerb antreten, in dem nur der Sieger zählt: Dort kann Übertreiben auch bei einer guten Regel lohnen. Alle Zahlen stammen aus Simulationen, nicht von echten Prognostikern.
+
+[Ausführlich und verständlich erklärt, mit Fachteil](https://sebastianhanisch.net/ehrlichkeit-belohnen-erklaert.html)
+        """
+    )
+# erklaerseite:einfach:end
 
 with st.expander("So funktioniert der Vergleich", expanded=True):
     st.markdown(
@@ -230,6 +245,30 @@ st.markdown(
 st.markdown("---")
 
 with st.expander("📐 Mathematische Formulierung"):
+    # erklaerseite:lesehilfe:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/ehrlichkeit-belohnen-erklaert.json, nicht von Hand ändern)
+    st.markdown(
+        r"""
+**Lesehilfe.** Gegeben ist ein Prognostiker, der glaubt, dass ein Ereignis mit Wahrscheinlichkeit $p$ eintritt, und eine Regel $S$, die Punkte gegen den Ausgang vergibt. Gesucht ist die Meldung $q$ mit der höchsten erwarteten Punktzahl, und ob sie gleich $p$ ist.
+
+| Symbol | Bedeutung |
+|---|---|
+| $p$ | Glaube des Prognostikers: Wahrscheinlichkeit, dass das Ereignis eintritt |
+| $q$ | gemeldete Wahrscheinlichkeit; ehrlich ist $q = p$ |
+| $y$ | Ausgang: 1, wenn das Ereignis eintritt, sonst 0 |
+| $S(q, y)$ | Punkte der Regel für die Meldung $q$ beim Ausgang $y$ (größer ist besser) |
+| $\bar S(q; p)$ | erwartete Punktzahl der Meldung $q$ bei dem Glauben $p$ |
+| $D_1$, $D_0$ | Punktvorsprung der ehrlichen Meldung gegenüber $q$, wenn das Ereignis eintritt beziehungsweise nicht eintritt |
+| $\Delta$ | erwarteter Vorsprung der Ehrlichkeit je Ereignis |
+| $n_{95}$ | Zahl der Ereignisse, nach der man die Abweichung im Mittel mit 1,645 Standardabweichungen erkennt (Normalnäherung) |
+| $\mu$ | Brier-Anteil der Mischregel aus Brier und Absolutfehler |
+| $q^*$ | beste Meldung der Mischregel |
+| $\lambda$ | Skalierung der Log-Odds beim abweichenden Prognostiker im Wettbewerb (1 ist ehrlich) |
+| $\sigma$, $\operatorname{logit}$ | Umrechnung zwischen Wahrscheinlichkeit und Log-Odds |
+
+[Schritt für Schritt erklärt, mit Herleitung und Literatur](https://sebastianhanisch.net/ehrlichkeit-belohnen-erklaert.html#fachleute)
+        """
+    )
+    # erklaerseite:lesehilfe:end
     st.markdown(
         r"""
 **Setting.** Der Prognostiker glaubt $P(y = 1) = p$ und meldet $q \in (0, 1)$; die Regel $S(q, y)$ vergibt Punkte, größer ist besser. Die erwartete Punktzahl ist $\bar S(q; p) = p\, S(q, 1) + (1 - p)\, S(q, 0)$.
