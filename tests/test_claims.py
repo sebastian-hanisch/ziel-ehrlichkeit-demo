@@ -50,6 +50,23 @@ def test_unique_among_lose_and_gain_over_all_beliefs():
         assert max(ev.best_info(ev.Settings(p=p, rule=rule))["gain"] for p in range(1, 100)) < 1e-12
 
 
+def test_hit_rate_punishes_only_lies_across_one_half():
+    costly = lies = same_side = 0
+    for p in range(1, 100):
+        for q in range(1, 100):
+            if q != p:
+                lies += 1
+                lost = A.exact_expected("Trefferquote", A.Fraction(p, 100), A.Fraction(p, 100)) - A.exact_expected("Trefferquote", A.Fraction(p, 100), A.Fraction(q, 100))
+                costly += lost > 0
+                same_side += lost > 0 and (q > 50) == (p > 50) and q != 50 and p != 50
+    assert (costly, lies, same_side) == (4900, 9702, 0)
+    _claim("(von 9 702 Paaren) | **4 900**;")
+    _claim("Beispiel `p` = 30 %, Meldung 60 %: erwartet 0,3 statt 0,7")
+    _claim("kostet 0,4 (erwartet 0,3 statt 0,7)")
+    _claim("4 900 von 9 702 Paaren `p`, `q` mit `q` ≠ `p`")
+    assert abs(A.expected("Trefferquote", 0.3, 0.6) - 0.3) < 1e-12 and abs(A.expected("Trefferquote", 0.3, 0.3) - 0.7) < 1e-12
+
+
 def test_losses_and_detection_counts():
     for p, q in ((30, 40), (50, 60), (80, 90)):
         assert round(A.loss("Brier", p, q), 4) == 0.01
@@ -98,7 +115,8 @@ def test_finite_sweep_claims(sweeps):
     _claim(f"{_slash(_over(f, 'Absolutfehler'))} % und {_slash(_under(f, 'Absolutfehler'), lambda x: ev.de(x, 1) if x not in (100.0,) else '100')} %")
     _claim(f"{_slash(_over(f, 'Trefferquote', 'tie'), lambda x: ev.de(x, 0))} %** und {_slash(_under(f, 'Trefferquote'))} %")
     _claim(f"(Gleichstand {_slash(_under(f, 'Trefferquote', 'tie'))} %)")
-
+    _claim(f"(−10; höchstens bis 50 %) | Brier {_slash(_under(f, 'Brier'))} %")
+    _claim(f"Brier bei 10 Ereignissen {d1(f[10]['Brier']['under']['win'])} statt 66,3 %, Absolutfehler {d1(f[10]['Absolutfehler']['under']['win'])} statt 89,6 %")
 
 def _wins(c, rule, m):
     return [c[rule][m][lam]["win"] for lam in LAMS]
@@ -142,7 +160,7 @@ def test_absolute_error_preset():
 def test_hit_rate_preset():
     s = _s(P_HIT)
     b, fin = ev.best_info(s), ev.finite_info(s)
-    _claim(f"ehrlich eine von **{len(b['best'])}** gleich guten Meldungen ({b['best'][0]} % bis {b['best'][-1]} %); Gleichstand gegen Übertreiben in {d1(fin['rules']['Trefferquote']['over']['tie'])} %, ehrlich vor untertreibend in {d1(fin['rules']['Trefferquote']['under']['win'])} %")
+    _claim(f"ehrlich eine von **{len(b['best'])}** gleich guten Meldungen ({b['best'][0]} % bis {b['best'][-1]} %); die Meldung 60 % auf der anderen Seite kostet 0,4 (erwartet 0,3 statt 0,7); Gleichstand gegen Übertreiben in {d1(fin['rules']['Trefferquote']['over']['tie'])} %, ehrlich vor untertreibend in {d1(fin['rules']['Trefferquote']['under']['win'])} %")
 
 
 def test_log_preset():

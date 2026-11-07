@@ -13,7 +13,10 @@ def _s(name):
 def test_best_verdict_unique_tie_and_loss():
     assert ev.verdict_best(ev.best_info(_s(P_BRIER))) == ("success", "Bei p = 30 % ist die ehrliche Meldung bei der Regel Brier die **einzige beste**: jede Lüge kostet erwartete Punkte.")
     assert ev.verdict_best(ev.best_info(_s(P_HIT))) == ("warning", "Bei p = 30 % ist die ehrliche Meldung bei der Regel Trefferquote **eine von 49 gleich guten** Meldungen (1 % bis 49 %): "
-                                                                  "Lügen kostet nichts, Ehrlichkeit wird hier nicht belohnt.")
+                                                                  "Lügen innerhalb dieser Meldungen kostet nichts, eine Meldung außerhalb kostet erwartete Punkte; Ehrlichkeit wird hier nicht belohnt.")
+    for rule in (3, 4):                                                                                                  # bei p = 50 % sind alle 99 Meldungen gleich gut
+        kind, text = ev.verdict_best(ev.best_info(ev.Settings(p=50, rule=rule)))
+        assert kind == "warning" and "eine von 99 gleich guten" in text and "(1 % bis 99 %): Lügen kostet nichts, Ehrlichkeit wird hier nicht belohnt." in text
     assert ev.verdict_best(ev.best_info(_s(P_ABS))) == ("error", "Bei p = 30 % ist die ehrliche Meldung bei der Regel Absolutfehler **nicht die beste**: die beste Meldung ist 1 % und bringt erwartet 0,1160 Punkte mehr "
                                                                  "als die ehrliche (-0,3040 gegen -0,4200).")
     assert "Regel Log die **einzige beste**" in ev.verdict_best(ev.best_info(_s(P_LOG)))[1]
@@ -32,7 +35,7 @@ def test_incentive_verdict_cases():
 def test_finite_verdict_cases():
     kind, text = ev.verdict_finite(ev.finite_info(_s(P_BRIER)), "Brier")
     assert kind == "warning" and text == ("Bei der Regel Brier liegt die ehrliche Meldung nach 20 Ereignissen in **68,8 %** der 2000 Versuche strikt vor einer um 10 Prozentpunkte übertriebenen und in "
-                                          "**71,0 %** vor einer untertriebenen; in 31,2 % beziehungsweise 28,9 % verliert sie.")
+                                          "**69,5 %** vor einer untertriebenen; in 31,2 % beziehungsweise 30,6 % verliert sie.")
     text = ev.verdict_finite(ev.finite_info(_s(P_HIT)), "Trefferquote")[1]
     assert "**0,0 %**" in text and "(gleich viele Punkte: 100,0 % beziehungsweise 18,7 %)" in text
     kind, text = ev.verdict_finite(ev.finite_info(ev.Settings(n=500)), "Log")

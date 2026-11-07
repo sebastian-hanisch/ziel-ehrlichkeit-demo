@@ -123,7 +123,9 @@ def test_finite_matches_a_loop_over_the_same_draws():
                 other = 0.0
                 for j in range(n):
                     pj = float(p[t, j])
-                    q = min(max(pj + (1 if pj >= 0.5 else -1) * dd, 0.01), 0.99)
+                    dist = abs(pj - 0.5)                                                  # Abstand der Meldung von 1/2
+                    new_dist = dist + dd if dd > 0 else max(dist + dd, 0.0)               # Untertreiben (dd < 0) stoppt bei 1/2, geht nicht darüber hinaus
+                    q = min(max(0.5 + (1 if pj >= 0.5 else -1) * new_dist, 0.01), 0.99)
                     other += py_score(rule, q, float(y[t, j]))
                 diff = honest - other
                 counts[label][0 if diff > 1e-12 else 1 if abs(diff) <= 1e-12 else 2] += 1

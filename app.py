@@ -87,7 +87,7 @@ with st.container(key="kopf"):
 st.markdown(
     """
 **Welches Ziel belohnt die wahre Angabe?** Das Beispiel wechselt: kein Zuordnungsplan, sondern eine **Prognose**. Ein Prognostiker glaubt, ein Ereignis trete mit Wahrscheinlichkeit **p** ein, und **meldet** eine Wahrscheinlichkeit **q**;
-eine **Regel** (das Ziel) vergibt Punkte gegen den Ausgang. **Ehrlich** ist q = p. Bei **Brier**, **Log** und **sphärisch** ist die ehrliche Meldung im Erwartungswert die beste, bei der **Trefferquote** ist sie gleichgültig,
+eine **Regel** (das Ziel) vergibt Punkte gegen den Ausgang. **Ehrlich** ist q = p. Bei **Brier**, **Log** und **sphärisch** ist die ehrliche Meldung im Erwartungswert die beste, bei der **Trefferquote** zählt nur die Seite von 50 % (die ehrliche Meldung ist eine von vielen gleich guten; eine Lüge auf die andere Seite kostet Punkte, eine auf derselben Seite nichts),
 beim **Absolutfehler** lohnt die Lüge (außer bei 1, 50 und 99 %). Aber auch das richtige Ziel hat Grenzen: der Anreiz ist schwach, auf wenigen Ereignissen liegt die Ehrlichkeit oft nicht vorn, und im **Wettbewerb** mit vielen Prognostikern, in dem nur der Sieger zählt, lohnt Übertreiben trotzdem (bei 2 und 5 Prognostikern nicht).
 
 Weiter unten: **🔬 Die Stärke des Anreizes**, **🔬 Ehrlich gegen übertreibend**, **🔬 Der Wettbewerb**, **🔬 Ein bisschen uneigentlich**, **🚧 Wo die Annahmen enden** und der Expander **📐 Mathematische Formulierung**.
@@ -100,7 +100,7 @@ with st.expander("So funktioniert der Vergleich", expanded=True):
 1. **Meldung und Punkte:** der Prognostiker meldet q (ganze Prozent 1 bis 99), das Ereignis tritt ein (y = 1) oder nicht (y = 0). **Brier** −(q−y)², **Log** y·ln q + (1−y)·ln(1−q), **sphärisch** (Wahrscheinlichkeit des Ausgangs geteilt durch die Länge von (q, 1−q)), **Trefferquote** (1 Punkt, wenn q auf der Seite des Ausgangs von 50 % liegt), **Absolutfehler** −|q−y|.
 2. **Die beste Meldung:** die Meldung mit der höchsten **erwarteten** Punktzahl bei dem Glauben p. Ist sie immer q = p, heißt die Regel **strikt eigentlich**.
 3. **Der Anreiz:** wie viele Punkte kostet eine um d Prozentpunkte verschobene Meldung, und nach wie vielen Ereignissen erkennt man sie im Mittel (1,645 Standardabweichungen, Normalnäherung)?
-4. **Zufallsversuche:** die Ereignisse haben p gleichverteilt 0,05 bis 0,95 (nicht der Regler p), der Ausgang wird mit p gezogen; verglichen wird die ehrliche Meldung mit einer um d Prozentpunkte **übertriebenen** (vom Wert 50 % weg) oder **untertriebenen** (auf 50 % zu).
+4. **Zufallsversuche:** die Ereignisse haben p gleichverteilt 0,05 bis 0,95 (nicht der Regler p), der Ausgang wird mit p gezogen; verglichen wird die ehrliche Meldung mit einer um d Prozentpunkte **übertriebenen** (vom Wert 50 % weg) oder **untertriebenen** (auf 50 % zu, höchstens bis 50 %, nie darüber hinaus).
 5. **Wettbewerb:** m Prognostiker mit eigenem verrauschten Glauben, Sieger ist die höchste Gesamtpunktzahl auf 20 Ereignissen; einer skaliert die Log-Odds seines Glaubens mit λ (1,0 ist ehrlich).
 6. **Messungen, kein Satz:** Alle Zahlen sind Zählungen und exakte Rechnungen an diesem Modell; sie sagen nichts über echte Prognostiker.
         """

@@ -82,7 +82,19 @@ def test_mix_by_hand():
 def test_exaggerate_moves_away_from_one_half_and_clips():
     p = np.array([0.3, 0.7, 0.5, 0.95, 0.02])
     assert list(np.round(A.exaggerate(p, 0.1), 2)) == [0.2, 0.8, 0.6, 0.99, 0.01]
-    assert list(np.round(A.exaggerate(p, -0.1), 2)) == [0.4, 0.6, 0.4, 0.85, 0.12]
+    assert list(np.round(A.exaggerate(p, -0.1), 2)) == [0.4, 0.6, 0.5, 0.85, 0.12]            # bei p = 1/2 bleibt die Meldung 1/2
+
+
+def test_understating_stops_at_one_half_and_never_crosses_it():
+    """p = 0,45 und d = −0,10 gab früher 0,55 (über 1/2 hinaus); jetzt höchstens 0,50, gespiegelt ebenso."""
+    p = np.array([0.45, 0.55, 0.40, 0.60, 0.48, 0.52, 0.41, 0.59, 0.05, 0.95])
+    assert list(np.round(A.exaggerate(p, -0.1), 2)) == [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.15, 0.85]
+    grid = np.linspace(0.01, 0.99, 99)
+    for d in (-0.01, -0.1, -0.3):
+        q = A.exaggerate(grid, d)
+        assert (np.abs(q - 0.5) <= np.abs(grid - 0.5) + 1e-12).all()                            # nie weiter von 1/2 weg als der Glaube
+        assert ((q - 0.5) * (grid - 0.5) >= 0).all()                                            # nie auf der anderen Seite von 1/2
+    assert (np.abs(A.exaggerate(grid, 0.1) - 0.5) >= np.abs(grid - 0.5) - 1e-12).all()         # Übertreiben bleibt Übertreiben
 
 
 def test_no_shift_gives_a_tie_in_every_trial():

@@ -73,6 +73,23 @@ def test_hit_rate_only_sees_the_side_of_one_half():
         assert A.loss("Trefferquote", p, 20 if p < 50 else 80) == pytest.approx(0.0)
 
 
+def test_hit_rate_punishes_exactly_the_lies_that_leave_the_side_of_one_half():
+    """Lügen kosten bei der Trefferquote nur, wenn die Meldung auf die andere Seite von 1/2 oder genau auf 1/2 rückt (und p ≠ 1/2); auf derselben Seite nie."""
+    sgn = lambda x: (x > 50) - (x < 50)
+    costly = lies = 0
+    for p in range(1, 100):
+        for q in range(1, 100):
+            if q == p:
+                continue
+            lost = A.exact_expected("Trefferquote", A.Fraction(p, 100), A.Fraction(p, 100)) - A.exact_expected("Trefferquote", A.Fraction(p, 100), A.Fraction(q, 100))
+            assert lost >= 0
+            assert (lost > 0) == (p != 50 and sgn(q) != sgn(p)), (p, q)
+            lies += 1
+            costly += lost > 0
+    assert (costly, lies) == (4900, 9702)
+    assert not any(A.best_set("Trefferquote", p) == [p] for p in range(1, 100))             # ehrlich ist nie die einzige beste
+
+
 @pytest.mark.parametrize("rule", ("Trefferquote", "Absolutfehler"))
 def test_improper_rules_never_make_honesty_the_unique_best_for_inner_beliefs(rule):
     for p in range(2, 99):

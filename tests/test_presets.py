@@ -1,5 +1,6 @@
 """Presets: Vollständigkeit, gültige Werte, Standard-Preset = Standardeinstellungen, und was jedes Preset zeigen soll."""
 
+import zeh_algorithm as A
 import zeh_constants as C
 import zeh_evaluation as ev
 import zeh_presets as P
@@ -57,6 +58,8 @@ def test_hit_rate_preset_is_indifferent():
     s = _s(P_HIT)
     b, fin = ev.best_info(s), ev.finite_info(s)
     assert b["best"] == list(range(1, 50)) and b["honest_best"] and not b["unique"] and fin["rules"]["Trefferquote"]["over"]["tie"] == 100.0
+    assert round(A.loss("Trefferquote", 30, 60), 12) == 0.4 and round(A.expected("Trefferquote", 0.3, 0.6), 12) == 0.3 and round(A.expected("Trefferquote", 0.3, 0.3), 12) == 0.7
+    assert "kostet 0,4 Punkte je Ereignis (erwartet 0,3 statt 0,7)" in C.PRESET_HELP[P_HIT]                  # die Lüge über die 50-%-Grenze kostet, die Hilfe sagt es
 
 
 def test_log_preset_costs_0_0204_and_is_detectable_after_267_events():

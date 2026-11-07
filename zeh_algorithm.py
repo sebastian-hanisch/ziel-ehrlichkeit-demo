@@ -108,9 +108,12 @@ def n95(rule: str, p_pct: int, q_pct: int) -> float | None:
 
 
 def exaggerate(p: np.ndarray, d: float) -> np.ndarray:
-    """Meldung um d (Wahrscheinlichkeit) vom Wert 1/2 weg (d > 0) oder auf ihn zu (d < 0), in [0,01; 0,99]."""
+    """Meldung um d (Wahrscheinlichkeit) vom Wert 1/2 weg (d > 0, übertreibend) oder auf ihn zu (d < 0, untertreibend), in [0,01; 0,99]. Untertreiben nimmt die Meldung höchstens bis 1/2 zurück, nie darüber hinaus (p = 0,45, d = −0,10 gibt 0,50; bei p = 1/2 bleibt sie 1/2)."""
     sign = np.where(p >= 0.5, 1.0, -1.0)
-    return np.clip(p + sign * d, C.Q_LOW, C.Q_HIGH)
+    q = p + sign * d
+    if d < 0:                                                   # untertreibend: nicht über 1/2 hinaus
+        q = np.where(p >= 0.5, np.maximum(q, 0.5), np.minimum(q, 0.5))
+    return np.clip(q, C.Q_LOW, C.Q_HIGH)
 
 
 def finite(n: int, d_pct: int, trials: int, seed: int) -> dict:

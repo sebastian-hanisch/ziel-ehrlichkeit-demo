@@ -145,8 +145,11 @@ def verdict_best(info: dict) -> tuple[str, str]:
     if info["unique"]:
         return "success", f"Bei p = {p} % ist die ehrliche Meldung bei der Regel {name} die **einzige beste**: jede Lüge kostet erwartete Punkte."
     if info["honest_best"]:
-        return "warning", (f"Bei p = {p} % ist die ehrliche Meldung bei der Regel {name} **eine von {len(best)} gleich guten** Meldungen ({best[0]} % bis {best[-1]} %): Lügen kostet nichts, "
-                           f"Ehrlichkeit wird hier nicht belohnt.")
+        if len(best) == len(C.GRID):
+            return "warning", (f"Bei p = {p} % ist die ehrliche Meldung bei der Regel {name} **eine von {len(best)} gleich guten** Meldungen ({best[0]} % bis {best[-1]} %): Lügen kostet nichts, "
+                               f"Ehrlichkeit wird hier nicht belohnt.")
+        return "warning", (f"Bei p = {p} % ist die ehrliche Meldung bei der Regel {name} **eine von {len(best)} gleich guten** Meldungen ({best[0]} % bis {best[-1]} %): Lügen innerhalb dieser Meldungen kostet nichts, "
+                           f"eine Meldung außerhalb kostet erwartete Punkte; Ehrlichkeit wird hier nicht belohnt.")
     return "error", (f"Bei p = {p} % ist die ehrliche Meldung bei der Regel {name} **nicht die beste**: die beste Meldung ist {best[0]} % und bringt erwartet {de(info['gain'], 4)} Punkte mehr "
                      f"als die ehrliche ({de(info['top'], 4)} gegen {de(info['truth'], 4)}).")
 

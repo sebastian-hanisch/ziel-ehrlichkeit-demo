@@ -34,10 +34,10 @@ def test_finite_sweep_numbers_over(sweeps):
 
 def test_finite_sweep_numbers_under(sweeps):
     f = sweeps["finite"]
-    assert _under(f, "Brier") == [66.3, 71.7, 79.7, 87.6, 99.6]
-    assert _under(f, "Log") == [65.8, 71.5, 79.8, 88.1, 99.5]
-    assert _under(f, "sphärisch") == [65.1, 70.5, 78.0, 86.5, 99.2]
-    assert _under(f, "Absolutfehler") == [89.6, 97.2, 100.0, 100.0, 100.0]
+    assert _under(f, "Brier") == [65.5, 70.2, 79.3, 86.1, 99.5]                      # Untertreiben höchstens bis 1/2 (früher 66,3 / 71,7 / 79,7 / 87,6 / 99,6)
+    assert _under(f, "Log") == [65.6, 70.2, 79.3, 86.2, 99.4]
+    assert _under(f, "sphärisch") == [65.3, 69.8, 77.4, 85.4, 99.2]
+    assert _under(f, "Absolutfehler") == [95.1, 99.2, 100.0, 100.0, 100.0] and _under(f, "Absolutfehler", "tie") == [0.4, 0.0, 0.0, 0.0, 0.0]
     assert _under(f, "Trefferquote") == [42.5, 49.1, 56.8, 66.1, 82.5] and _under(f, "Trefferquote", "tie") == [27.8, 17.8, 11.1, 7.3, 2.3]
 
 
