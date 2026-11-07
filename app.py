@@ -3,7 +3,7 @@ Sebastian Hanisch - Operations Research und Machine Learning
 
 Stück 7 der Reihe „Zielfunktionsdesign“ (gelb, das Beispiel wechselt von der Zuordnung zur Prognose): Welches Ziel belohnt die wahre Angabe?
 Die Demo zeigt, bei welcher Regel die ehrliche Meldung die beste ist (Brier, Log, sphärisch gegen Trefferquote und Absolutfehler), wie schwach der Anreiz ist,
-wie oft die Ehrlichkeit auf endlich vielen Ereignissen vorn liegt, warum ein Wettbewerb, in dem nur der Sieger zählt, sie bei vielen Prognostikern trotzdem verdirbt und was schon ein Anteil Absolutfehler anrichtet.
+wie oft die Ehrlichkeit auf endlich vielen Ereignissen vorn liegt, warum ein Wettbewerb, in dem nur der Sieger zählt, sie bei 20 Prognostikern klar, bei 10 nur wenig und bei 2 und 5 nicht verdirbt und was schon ein Anteil Absolutfehler anrichtet.
 
 Lauffähig mit: streamlit run app.py
 """
@@ -87,8 +87,8 @@ with st.container(key="kopf"):
 st.markdown(
     """
 **Welches Ziel belohnt die wahre Angabe?** Das Beispiel wechselt: kein Zuordnungsplan, sondern eine **Prognose**. Ein Prognostiker glaubt, ein Ereignis trete mit Wahrscheinlichkeit **p** ein, und **meldet** eine Wahrscheinlichkeit **q**;
-eine **Regel** (das Ziel) vergibt Punkte gegen den Ausgang. **Ehrlich** ist q = p. Bei **Brier**, **Log** und **sphärisch** ist die ehrliche Meldung im Erwartungswert die beste, bei der **Trefferquote** zählt nur die Seite von 50 % (die ehrliche Meldung ist eine von vielen gleich guten; eine Lüge auf die andere Seite kostet Punkte, eine auf derselben Seite nichts),
-beim **Absolutfehler** lohnt die Lüge (außer bei 1, 50 und 99 %). Aber auch das richtige Ziel hat Grenzen: der Anreiz ist schwach, auf wenigen Ereignissen liegt die Ehrlichkeit oft nicht vorn, und im **Wettbewerb** mit vielen Prognostikern, in dem nur der Sieger zählt, lohnt Übertreiben trotzdem (bei 2 und 5 Prognostikern nicht).
+eine **Regel** (das Ziel) vergibt Punkte gegen den Ausgang. **Ehrlich** ist q = p. Bei **Brier**, **Log** und **sphärisch** ist die ehrliche Meldung im Erwartungswert die beste, bei der **Trefferquote** zählt nur die Seite von 50 % (die ehrliche Meldung ist eine von vielen gleich guten; eine Lüge bringt nie Punkte: auf derselben Seite von 50 % kostet sie nichts, auf der anderen Seite oder genau auf 50 % kostet sie Punkte),
+beim **Absolutfehler** lohnt die Lüge (außer bei 1, 50 und 99 %). Aber auch das richtige Ziel hat Grenzen: der Anreiz ist schwach, bei 10 Ereignissen liegt die ehrliche Meldung beim Brier-Maß gegen eine um 10 Prozentpunkte übertriebene nur in 60,5 % der Versuche vorn, und im **Wettbewerb**, in dem nur der Sieger zählt, lohnt Übertreiben trotzdem: bei 20 Prognostikern klar, bei 10 nur wenig, bei 2 und 5 nicht.
 
 Weiter unten: **🔬 Die Stärke des Anreizes**, **🔬 Ehrlich gegen übertreibend**, **🔬 Der Wettbewerb**, **🔬 Ein bisschen uneigentlich**, **🚧 Wo die Annahmen enden** und der Expander **📐 Mathematische Formulierung**.
 """
@@ -97,7 +97,7 @@ Weiter unten: **🔬 Die Stärke des Anreizes**, **🔬 Ehrlich gegen übertreib
 with st.expander("So funktioniert der Vergleich", expanded=True):
     st.markdown(
         """
-1. **Meldung und Punkte:** der Prognostiker meldet q (ganze Prozent 1 bis 99), das Ereignis tritt ein (y = 1) oder nicht (y = 0). **Brier** −(q−y)², **Log** y·ln q + (1−y)·ln(1−q), **sphärisch** (Wahrscheinlichkeit des Ausgangs geteilt durch die Länge von (q, 1−q)), **Trefferquote** (1 Punkt, wenn q auf der Seite des Ausgangs von 50 % liegt), **Absolutfehler** −|q−y|.
+1. **Meldung und Punkte:** der Prognostiker meldet q (ganze Prozent 1 bis 99), das Ereignis tritt ein (y = 1) oder nicht (y = 0). **Brier** −(q−y)², **Log** y·ln q + (1−y)·ln(1−q), **sphärisch** (Wahrscheinlichkeit des Ausgangs geteilt durch die Länge von (q, 1−q)), **Trefferquote** (1 Punkt, wenn q auf der Seite des Ausgangs von 50 % liegt, bei q = 50 % ein halber), **Absolutfehler** −|q−y|.
 2. **Die beste Meldung:** die Meldung mit der höchsten **erwarteten** Punktzahl bei dem Glauben p. Ist sie immer q = p, heißt die Regel **strikt eigentlich**.
 3. **Der Anreiz:** wie viele Punkte kostet eine um d Prozentpunkte verschobene Meldung, und nach wie vielen Ereignissen erkennt man sie im Mittel (1,645 Standardabweichungen, Normalnäherung)?
 4. **Zufallsversuche:** die Ereignisse haben p gleichverteilt 0,05 bis 0,95 (nicht der Regler p), der Ausgang wird mit p gezogen; verglichen wird die ehrliche Meldung mit einer um d Prozentpunkte **übertriebenen** (vom Wert 50 % weg) oder **untertriebenen** (auf 50 % zu, höchstens bis 50 %, nie darüber hinaus).
@@ -179,7 +179,7 @@ if st.toggle("Die Ehrlichkeit über feste Ereigniszahlen nachrechnen (10 bis 500
 st.markdown("---")
 
 st.subheader("🔬 Der Wettbewerb")
-st.caption(f"Wer nicht nach Punkten, sondern nur als Sieger bezahlt wird, hat bei vielen Prognostikern auch beim richtigen Ziel einen Grund zu übertreiben (bei 2 und 5 Prognostikern nicht): {settings.m} Prognostiker mit verrauschtem Glauben, Sieger ist die höchste Gesamtpunktzahl auf {C.N_CONTEST} Ereignissen; "
+st.caption(f"Wer nicht nach Punkten, sondern nur als Sieger bezahlt wird, hat bei 20 Prognostikern auch beim richtigen Ziel einen klaren Grund zu übertreiben (bei 10 ist der Vorteil klein, bei 2 und 5 fehlt er): {settings.m} Prognostiker mit verrauschtem Glauben, Sieger ist die höchste Gesamtpunktzahl auf {C.N_CONTEST} Ereignissen; "
            f"einer meldet extremere (λ über 1) oder vorsichtigere Wahrscheinlichkeiten (λ unter 1) als er glaubt. {C.T_CONTEST} Versuche.")
 con = _contest(settings)
 st.plotly_chart(build_contest(con), width="stretch", key="contest_chart")
