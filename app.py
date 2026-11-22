@@ -88,7 +88,7 @@ st.markdown(
     """
 **Welches Ziel belohnt die wahre Angabe?** Das Beispiel wechselt: kein Zuordnungsplan, sondern eine **Prognose**. Ein Prognostiker glaubt, ein Ereignis trete mit Wahrscheinlichkeit **p** ein, und **meldet** eine Wahrscheinlichkeit **q**;
 eine **Regel** (das Ziel) vergibt Punkte gegen den Ausgang. **Ehrlich** ist q = p. Bei **Brier**, **Log** und **sphärisch** ist die ehrliche Meldung im Erwartungswert die beste, bei der **Trefferquote** zählt nur die Seite von 50 % (die ehrliche Meldung ist eine von vielen gleich guten; eine Lüge bringt nie Punkte: auf derselben Seite von 50 % kostet sie nichts, auf der anderen Seite oder genau auf 50 % kostet sie Punkte),
-beim **Absolutfehler** lohnt die Lüge (außer bei 1, 50 und 99 %). Aber auch das richtige Ziel hat Grenzen: der Anreiz ist schwach, bei 10 Ereignissen liegt die ehrliche Meldung beim Brier-Maß gegen eine um 10 Prozentpunkte übertriebene nur in 60,5 % der Versuche vorn, und im **Wettbewerb**, in dem nur der Sieger zählt, lohnt Übertreiben trotzdem: bei 20 Prognostikern klar, bei 10 nur wenig, bei 2 und 5 nicht.
+beim **Absolutfehler** lohnt die Lüge (außer bei 1, 50 und 99 %). Aber auch das richtige Ziel hat Grenzen: der Anreiz ist schwach, bei 10 Ereignissen liegt die ehrliche Meldung beim Brier-Score gegen eine um 10 Prozentpunkte übertriebene nur in 60,5 % der Versuche vorn, und im **Wettbewerb**, in dem nur der Sieger zählt, lohnt Übertreiben trotzdem: bei 20 Prognostikern klar, bei 10 nur wenig, bei 2 und 5 nicht.
 
 Wer das Thema zuerst ohne Fachbegriffe verstehen will, öffnet „💬 In einfachen Worten“.
 
@@ -171,7 +171,7 @@ st.markdown("---")
 # --- Experimente ---------------------------------------------------------------------------------------------------------------------------
 
 st.subheader("🔬 Die Stärke des Anreizes")
-st.caption("Selbst ein strikt eigentliches Ziel setzt nur einen schwachen Anreiz: eine um d Prozentpunkte verschobene Meldung kostet beim Brier-Maß genau d² (bei 10 Prozentpunkten 0,01 Punkte je Ereignis). Rot: die Verschiebung gewinnt oder ist gleich gut.")
+st.caption("Selbst ein strikt eigentliches Ziel setzt nur einen schwachen Anreiz: eine um d Prozentpunkte verschobene Meldung kostet beim Brier-Score genau d² (bei 10 Prozentpunkten 0,01 Punkte je Ereignis). Rot: die Verschiebung gewinnt oder ist gleich gut.")
 inc = incentive_info(settings)
 st.plotly_chart(build_incentive(inc), width="stretch", key="incentive_chart")
 kind, text = verdict_incentive(inc)
